@@ -9,9 +9,7 @@ public class Hint {
 
     private String definition;
 
-    public Hint() {
-
-    }
+    public Hint() {}
 
     public Hint(String tag,String definition) {
         setTag(tag);

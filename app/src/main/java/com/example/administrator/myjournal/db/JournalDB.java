@@ -7,6 +7,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
+import com.example.administrator.myjournal.util.LogUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +36,7 @@ public class JournalDB {
         return journalDB;
     }
 
-    public void saveHint(Hint hint) {
+    public void saveHint(Hint hint) {//same
         if (hint != null) {
             ContentValues values = new ContentValues();
             values.put("tag", hint.getTag());
@@ -44,20 +45,61 @@ public class JournalDB {
         }
     }
 
-    public void saveNote(Note note) {
-        if (note != null) {
+    public void saveTime(long time) {
+        ContentValues values = new ContentValues();
+        values.put("day", time);
+        db.insert("DayTable", null, values);
+    }
+
+    public List<Long> loadTime() {
+        List<Long> timeStr = new ArrayList<Long>();
+        Cursor cursor = db.query("DayTable", null, null, null, null, null, null);
+        if (cursor.moveToFirst()) {
+            do {
+                long timeLong = Long.parseLong(cursor.getString(cursor.getColumnIndex("day")));
+                timeStr.add(timeLong);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return timeStr.isEmpty()?null:timeStr;
+    }
+
+    public void saveNote(Note note, boolean insert) {//修改
+        if (insert) {
+            //插入
             ContentValues values = new ContentValues();
             values.put("time", note.getTime());
             values.put("tag", note.getTag());
-            values.put("content", note.getContent());
+            values.put("content", note.getDefinition());
             db.insert("Journal", null, values);
+        } else {
+            ContentValues values = new ContentValues();
+            values.put("content", note.getDefinition());
+            db.update("Journal", values, "time = ? and tag = ?", new String[]{String.valueOf(note.getTime()), note.getTag()});
         }
     }
 
+    public boolean hasDay(long time) {
+    //sql，不存在怎么处理？考虑：开机（24h更新一次）就将日期添加到表中，这样需要修改updata和save
+        boolean exist = false;
+        Cursor cursor = db.query("DayTable", null, "day = ?", new String[] {String.valueOf(time)}, null, null, null);
+        if (cursor.moveToFirst()) {
+            exist = true;
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return exist?true:false;
+    }
+//////////////////////////////////////
     public Hint loadHint(String tag) {
+        boolean exist = false;
         Hint hint = new Hint();
         Cursor cursor = db.query("Definition", null, "tag = ?", new String[] {tag}, null, null, null);
         if (cursor.moveToFirst()) {
+            exist = true;
             do {
                 hint.setDefinition(cursor.getString(cursor.getColumnIndex("definition")));
                 hint.setTag(cursor.getString(cursor.getColumnIndex("tag")));
@@ -66,33 +108,59 @@ public class JournalDB {
         if (cursor != null) {
             cursor.close();
         }
-        return hint;//null first
+        return exist?hint:null;
     }
 
-    public Note loadNote(long time) {
+    public List<Note> loadNote(long time) {
+        boolean exist = false;
         Cursor cursor = db.query("Journal", null, "time = ?", new String[] {String.valueOf(time)}, null, null, null);
-        Note note = new Note();
+        List<Note> list = new ArrayList<>();
         if (cursor.moveToFirst()) {
+            exist = true;
             do{
+                Note note = new Note();
                 note.setTime(time);
                 note.setTag(cursor.getString(cursor.getColumnIndex("tag")));
-                note.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                note.setDefinition(cursor.getString(cursor.getColumnIndex("content")));
+                list.add(note);
             } while (cursor.moveToNext());
         }
         if (cursor != null) {
             cursor.close();
         }
-        return note;//null
+        return exist?list:null;
+    }
+
+    public Note loadNote(long time, String tag) {
+        //多个约束条件怎么写;
+        boolean exist = false;
+        Note note = new Note();
+        Cursor cursor = db.query("Journal", null, "time = ? and tag = ?", new String[] {String.valueOf(time), tag}, null, null, null);
+        if (cursor.moveToFirst()) {
+            exist = true;
+            do{
+                LogUtil.e("journaldb", "执行了");
+                note.setTime(time);
+                note.setTag(tag);
+                note.setDefinition(cursor.getString(cursor.getColumnIndex("content")));
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return exist?note:null;//set要保证只有不存在的才为空
     }
 
     public List<Note> loadNote() {
+        boolean exist = false;
         List<Note> list = new ArrayList<Note>();
         Cursor cursor = db.query("Journal", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            exist = true;
             do {
                 Note note = new Note();
                 note.setTime(cursor.getLong(cursor.getColumnIndex("time")));
-                note.setContent(cursor.getString(cursor.getColumnIndex("content")));
+                note.setDefinition(cursor.getString(cursor.getColumnIndex("content")));
                 note.setTag(cursor.getString(cursor.getColumnIndex("tag")));
                 list.add(note);
             } while (cursor.moveToNext());
@@ -100,24 +168,52 @@ public class JournalDB {
         if (cursor != null) {
             cursor.close();
         }
-        return list;
+        return exist?list:null;
     }
 
-    public List<Hint> loadHint() {
-        List<Hint> list = new ArrayList<Hint>();
+    public List<String> loadHint() {
+        boolean exist = false;
+        List<String> list = new ArrayList<String>();
         Cursor cursor = db.query("Definition", null, null, null, null, null, null);
         if (cursor.moveToFirst()) {
+            exist = true;
             do {
-                Hint hint = new Hint();
-                hint.setDefinition(cursor.getString(cursor.getColumnIndex("definition")));
-                hint.setTag(cursor.getString(cursor.getColumnIndex("tag")));
-                list.add(hint);
+                String str;
+                str = (cursor.getString(cursor.getColumnIndex("tag")));
+                list.add(str);
             } while (cursor.moveToNext());
         }
         if (cursor != null) {
             cursor.close();
         }
-        return list;//null first
+        return exist?list:null;
     }
 
+    public void deleteNote(long time, String tagName) {
+        db.delete("Journal", "time = ? and tag = ?", new String[] {String.valueOf(time),tagName});
+    }
+
+    public void deleteTag(String tagName) {
+        //删除标签及信息;
+        db.delete("Journal", "tag = ?", new String[]{tagName});
+        db.delete("Definition", "tag = ?", new String[]{tagName});
+    }
+    public List<Note> loadNote(String tag) {
+        boolean exist = false;
+        List<Note> list = new ArrayList<Note>();
+        Cursor cursor = db.query("Journal", null, "tag = ?", new String[] {tag}, null, null, null);
+        if (cursor.moveToFirst()) {
+            exist = true;
+            do {
+                Note note = new Note();
+                note.setTime(cursor.getLong(cursor.getColumnIndex("time")));
+                note.setDefinition(cursor.getString(cursor.getColumnIndex("content")));
+                list.add(note);
+            } while (cursor.moveToNext());
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return exist?list:null;
+    }
 }

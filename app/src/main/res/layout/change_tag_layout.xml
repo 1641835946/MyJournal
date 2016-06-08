@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/remote_background"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="标签名："/>
+
+    <EditText
+        android:id="@+id/add_tag"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"/>
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="定义："/>
+
+    <EditText
+        android:id="@+id/add_definition"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal"/>
+
+    <Button
+        android:id="@+id/add_tag_button"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        style="@style/ButtonAppear"
+        android:text="确定"/>
+
+
+
+</LinearLayout>

@@ -2,48 +2,26 @@ package com.example.administrator.myjournal.model;
 
 import com.example.administrator.myjournal.util.CurrentTime;
 
+import java.util.List;
+
 /**
  * Created by Administrator on 2016/5/30.
  */
-public class Note {
+public class Note extends Hint{
+    //有两重用处，一是保存标签和提示，二是保存标签及日记内容
     private long time;
-    private String tag;
-    private String content;
+//    private String tag;
+//    private String content;
 
-    public Note() {
-
-    }
-
-    public Note(String tag, String content) {
-        time = CurrentTime.getTime();
-        setTag(tag);
-        setContent(content);
-    }
+    public Note() {}
 
     public Note(long time, String tag, String content) {
-        setTime(time);
-        setTag(tag);
-        setContent(content);
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
-    public void setContent(String content) {
-        this.content = content;
+        super(tag, content);
+        this.time = time;
     }
 
     public void setTime(long time) {
         this.time = time;
-    }
-
-    public String getTag() {
-        return tag;
-    }
-
-    public String getContent() {
-        return content;
     }
 
     public long getTime() {

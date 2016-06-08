@@ -17,6 +17,9 @@ public class MyJournalOpenHelper extends SQLiteOpenHelper {
             "id integer primary key autoincrement," +
             "tag text, " +
             "definition text)";
+    public static final String CREATE_DAYTABLE = "create table DayTable (" +
+            "id integer primary key autoincrement, " +
+            "day text)";
 
     public MyJournalOpenHelper(Context context, String name, SQLiteDatabase.CursorFactory factory, int version) {
         super(context, name, factory, version);
@@ -26,6 +29,7 @@ public class MyJournalOpenHelper extends SQLiteOpenHelper {
     public void onCreate(SQLiteDatabase db) {
         db.execSQL(CREATE_JOURNAL);
         db.execSQL(CREATE_DEFINITION);
+        db.execSQL(CREATE_DAYTABLE);
     }
 
     @Override
