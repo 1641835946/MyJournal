@@ -6,7 +6,11 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
+import android.support.design.widget.NavigationView;
 import android.support.design.widget.Snackbar;
+import android.support.v4.view.GravityCompat;
+import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -31,7 +35,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/5/30.
  */
-public class TodayActivity extends BaseActivity {
+public class TodayActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
 
     private RecyclerView mRecyclerView;
     private TodayAdapter mAdapter;
@@ -42,9 +46,9 @@ public class TodayActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.today_layout);
-//        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-//        setSupportActionBar(toolbar);
+        setContentView(R.layout.activity_today);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.today_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
@@ -85,12 +89,31 @@ public class TodayActivity extends BaseActivity {
                 LogUtil.e("note", "time:"+noteList.get(i).getTime()+"tag:"+noteList.get(i).getTag()+"content" +noteList.get(i).getDefinition());
             }
         }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+                this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
+        drawer.setDrawerListener(toggle);
+        toggle.syncState();
+
+        NavigationView navigationView = (NavigationView) findViewById(R.id.nav_view);
+        navigationView.setNavigationItemSelectedListener(this);
+    }
+
+    @Override
+    public void onBackPressed() {
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        if (drawer.isDrawerOpen(GravityCompat.START)) {
+            drawer.closeDrawer(GravityCompat.START);
+        } else {
+            super.onBackPressed();
+        }
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
+        getMenuInflater().inflate(R.menu.today, menu);
         return true;
     }
 
@@ -102,7 +125,8 @@ public class TodayActivity extends BaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        if (id == R.id.today_menu) {
+            //导出当天的所有，用印象笔记，以日期命名。
             return true;
         }
         return super.onOptionsItemSelected(item);
@@ -133,6 +157,37 @@ public class TodayActivity extends BaseActivity {
                 break;
             default:
         }
+    }
+
+    @SuppressWarnings("StatementWithEmptyBody")
+    @Override
+    public boolean onNavigationItemSelected(MenuItem item) {
+        // Handle navigation view item clicks here.
+        int id = item.getItemId();
+
+        if (id == R.id.nav_manage) {
+            // Handle the camera action
+        } else if (id == R.id.tagList) {
+            Intent tagListIntent = new Intent(TodayActivity.this, TagActivity.class);
+            startActivity(tagListIntent);
+
+        } else if (id == R.id.allList) {
+            Intent allListIntent = new Intent(TodayActivity.this, AllActivity.class);
+            startActivity(allListIntent);
+
+        } else if (id == R.id.dayList) {
+            Intent dayListIntent = new Intent(TodayActivity.this, DayLookingActivity.class);
+            startActivity(dayListIntent);
+
+        } else if (id == R.id.nav_share) {
+
+        } else if (id == R.id.nav_send) {//目的，使用方法
+
+        }
+
+        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer.closeDrawer(GravityCompat.START);
+        return true;
     }
 }
 

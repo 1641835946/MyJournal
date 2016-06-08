@@ -17,7 +17,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content" />
 
-    <EditText
+    <com.example.administrator.myjournal.util.InsertPicEditText
         android:id="@+id/today_edit_content"
         android:layout_width="match_parent"
         android:layout_height="100dp" />
@@ -25,7 +25,7 @@
     <Button
         android:id="@+id/today_edit_certain"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
+        android:layout_height="wrap_content"
         style="@style/ButtonAppear"
         android:text="编辑"
         android:background="#556164"/>

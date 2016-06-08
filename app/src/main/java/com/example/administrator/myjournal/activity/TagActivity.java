@@ -50,12 +50,12 @@ public class TagActivity extends BaseActivity implements TagAdapter.OnItemClickL
         Note note = journalDB.loadNote(2222222, "liang洁");
         if (note == null) Log.e("tagActivity", "false");
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
+        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.tag_add_float);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(TagActivity.this, AddTagActivity.class);
-                startActivityForResult(intent, 1);
+                Intent addIntent = new Intent(TagActivity.this, AddTagActivity.class);
+                startActivityForResult(addIntent, 1);
             }
         });
     }
@@ -90,26 +90,6 @@ public class TagActivity extends BaseActivity implements TagAdapter.OnItemClickL
         dialog.show();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {

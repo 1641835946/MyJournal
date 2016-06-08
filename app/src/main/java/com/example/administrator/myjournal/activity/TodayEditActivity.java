@@ -1,8 +1,22 @@
 package com.example.administrator.myjournal.activity;
 
+import android.annotation.TargetApi;
+import android.content.ContentUris;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.database.Cursor;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.DocumentsContract;
+import android.provider.MediaStore;
+import android.text.Editable;
+import android.text.SpannableString;
+import android.text.TextUtils;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -14,6 +28,7 @@ import com.example.administrator.myjournal.db.JournalDB;
 import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.CurrentTime;
+import com.example.administrator.myjournal.util.InsertPicEditText;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 
@@ -22,12 +37,12 @@ import com.example.administrator.myjournal.util.MyApplication;
  */
 public class TodayEditActivity extends BaseActivity implements View.OnClickListener {
 
+    public static final int CHOOSE_PHOTO = 1;
     private TextView tagView;
     private TextView hintView;
-    private EditText editText;
+    private InsertPicEditText editText;
     private Button certainButton;
     private JournalDB journalDB;
-    private String preContent;
     private Note note;
     private String tagText;
     private long time;
@@ -42,7 +57,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
     private void init() {
         tagView = (TextView) findViewById(R.id.today_edit_tag);
         hintView = (TextView) findViewById(R.id.today_edit_hint);
-        editText = (EditText) findViewById(R.id.today_edit_content);
+        editText = (InsertPicEditText) findViewById(R.id.today_edit_content);
         certainButton = (Button) findViewById(R.id.today_edit_certain);
         time = CurrentTime.getTime();
         Intent receiveIntent = getIntent();
@@ -54,9 +69,9 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         note = journalDB.loadNote(time, tagText);
         LogUtil.e("TodayEditActivity", note.toString());
         //if (note.getDefinition() == "") {
-            editText.setText(note.getDefinition());
-            preContent = note.getDefinition();
+            //editText.setText(note.getDefinition());
         //}
+        getImagePath(note.getDefinition());
         certainButton.setOnClickListener(this);
         editText.setFocusable(false);
         certainButton.requestFocus();
@@ -92,11 +107,9 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
 //            }
               if (editText.getText().toString().isEmpty()) {
                   journalDB.deleteNote(time, tagText);
-                  preContent = "";
               } else {
                   note.setDefinition(editText.getText().toString());
                   journalDB.saveNote(note, false);//修改
-                  preContent = editText.getText().toString();
               }
               certainButton.setText("编辑");//toast要break出去！！！
               editText.setFocusable(false);
@@ -118,4 +131,122 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         }
         finish();
     }
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        // Inflate the menu; this adds items to the action bar if it is present.
+        getMenuInflater().inflate(R.menu.day_tag_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+
+        //noinspection SimplifiableIfStatement
+        switch (id) {
+            case R.id.day_tag_insert:
+                Intent addPhotoIntent = new Intent("android.intent.action.GET_CONTENT");
+                addPhotoIntent.setType("image/*");
+                startActivityForResult(addPhotoIntent, CHOOSE_PHOTO);
+                break;
+            case R.id.day_tag_photo:
+
+                break;
+            default:
+        }
+        return true;
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case CHOOSE_PHOTO:
+                if (resultCode == RESULT_OK) {
+                    if (Build.VERSION.SDK_INT >= 19) {
+                        handleImageOnKitKat(data);
+                    } else {
+                        handleImageBeforeKitKat(data);
+                    }
+                }
+                break;
+            default:
+                break;
+        }
+    }
+
+    @TargetApi(19)
+    private void handleImageOnKitKat(Intent data){
+        String imagePath=null;
+        Uri uri=data.getData();
+        if(DocumentsContract.isDocumentUri(this, uri)){
+            String docId=DocumentsContract.getDocumentId(uri);
+            if("com.android.providers.media.documents".equals(uri.getAuthority())){
+                String id=docId.split(":")[1];
+                String selection= MediaStore.Images.Media._ID+"="+id;
+                imagePath=getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
+            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+                Uri contentUri= ContentUris.withAppendedId(Uri.parse("cintent://downloads/public_downloads"), Long.valueOf(docId));
+                imagePath=getImagePath(contentUri,null);
+            }
+        }else if("content".equalsIgnoreCase(uri.getScheme())){
+            imagePath=getImagePath(uri,null);
+        }
+        displayImage(imagePath);
+    }
+
+    private void handleImageBeforeKitKat(Intent data){
+        Uri uri=data.getData();
+        String imagePath=getImagePath(uri,null);
+        displayImage(imagePath);
+    }
+
+    private String getImagePath(Uri uri,String selection){
+        String path=null;
+        Cursor cursor=getContentResolver().query(uri, null,selection,null,null);
+        if(cursor!=null){
+            if(cursor.moveToFirst()){
+                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+            }
+            cursor.close();
+        }
+        return path;
+    }
+
+    private void getImagePath(String text) {
+        if (!TextUtils.isEmpty(text)) {
+            String[] array = text.split("\\|");
+            if (array != null) {
+                int i = 0;
+                while (i < array.length) {
+                    if (!array[i].isEmpty()) {
+                        if ((array[i].substring(0, 3)).equals("img")) {
+                            displayImage(array[i].substring(3));
+                        } else editText.append(array[i]);
+                    }
+                    i++;
+                }
+            }
+        }
+    }
+
+    private void displayImage(String imagePath){
+        if(imagePath!=null){
+            Bitmap bitmap= BitmapFactory.decodeFile(imagePath);
+            SpannableString mSpan1 = editText.displayBitmap(bitmap, imagePath);
+            if (mSpan1 != null) {
+                int start = editText.getSelectionStart();
+                Editable et = editText.getText();
+                et.insert(start, mSpan1);
+                editText.setText(et);
+                editText.setSelection(start + mSpan1.length());
+            }
+        }else{
+            Toast.makeText(this,"获取图片失败",Toast.LENGTH_SHORT).show();
+        }
+    }
+
 }

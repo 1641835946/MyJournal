@@ -3,7 +3,7 @@
     package="com.example.administrator.myjournal">
 
     <application
-        android:name="com.example.administrator.myjournal.util.MyApplication"
+        android:name=".util.MyApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
@@ -11,34 +11,35 @@
         android:theme="@style/AppTheme">
         <receiver android:name=".receiver.AlarmReceiver">
             <intent-filter>
-                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
             </intent-filter>
         </receiver>
-        <service android:name=".service.BootService"></service>
+
+        <service android:name=".service.BootService" />
+
         <activity
             android:name=".activity.TodayActivity"
             android:label="@string/app_name"
             android:theme="@style/AppTheme.NoActionBar">
-
-        </activity>
-        <activity android:name=".activity.TagActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name=".activity.AllActivity">
-        </activity>
+        <activity android:name=".activity.TagActivity"></activity>
+        <activity android:name=".activity.AllActivity"></activity>
         <activity
             android:name=".activity.BaseActivity"
             android:label="@string/app_name"
-            android:theme="@style/AppTheme.NoActionBar"></activity>
-        <activity android:name=".activity.AddTagActivity"></activity>
-        <activity android:name=".activity.TagLookingActivity"></activity>
-        <activity android:name=".activity.TodayEditActivity"></activity>
-
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity android:name=".activity.AddTagActivity" />
+        <activity android:name=".activity.TagLookingActivity" />
+        <activity android:name=".activity.TodayEditActivity" />
+        <activity
+            android:name=".activity.DayLookingActivity"
+            android:label="@string/title_activity_day_looking"
+            android:theme="@style/AppTheme"></activity>
     </application>
 
 </manifest>
