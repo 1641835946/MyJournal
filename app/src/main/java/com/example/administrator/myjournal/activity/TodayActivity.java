@@ -35,7 +35,7 @@ import java.util.List;
 /**
  * Created by Administrator on 2016/5/30.
  */
-public class TodayActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener {
+public class TodayActivity extends BaseActivity implements NavigationView.OnNavigationItemSelectedListener, TodayAdapter.OnItemClickLitener {
 
     private RecyclerView mRecyclerView;
     private TodayAdapter mAdapter;
@@ -54,19 +54,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         //mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
-        mAdapter.setOnItemClickLitener(new TodayAdapter.OnItemClickLitener() {
-            @Override
-            public void onItemClick(View view, int position) {
-                mPosition = position;
-                LogUtil.e("todayactivity", "点击了");
-                TextView tag = (TextView) view.findViewById(R.id.today_title);
-                mTag = tag.getText().toString();
-                Intent intent = new Intent(TodayActivity.this, TodayEditActivity.class);
-                intent.putExtra("tag", mTag);
-                startActivityForResult(intent, 1);
-                LogUtil.e("todayactivity", "跳转了");
-            }
-        });
+        mAdapter.setOnItemClickLitener(this);
         List<Long> timeList = journalDB.loadTime();
         List<String> hintList = journalDB.loadHint();
         List<Note> noteList = journalDB.loadNote();
@@ -100,6 +88,18 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         navigationView.setNavigationItemSelectedListener(this);
     }
 
+
+    public void onItemClick(View view, int position) {
+        mPosition = position;
+        LogUtil.e("todayactivity", "点击了");
+        TextView tag = (TextView) view.findViewById(R.id.today_title);
+        mTag = tag.getText().toString();
+        Intent intent = new Intent(TodayActivity.this, TodayEditActivity.class);
+        intent.putExtra("tag", mTag);
+        startActivityForResult(intent, 1);
+        LogUtil.e("todayactivity", "跳转了");
+    }
+
     @Override
     public void onBackPressed() {
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -108,6 +108,13 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         } else {
             super.onBackPressed();
         }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
+        mAdapter.setOnItemClickLitener(this);
     }
 
     @Override

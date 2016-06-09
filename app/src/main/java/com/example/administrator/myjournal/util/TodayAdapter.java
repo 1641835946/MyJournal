@@ -24,7 +24,7 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
 
     private JournalDB journalDB;
     public List<Note> mDatas;
-    public static long loginTime = 0;//同一次的编辑在同一天
+    public static long loginTime;//同一次的编辑在同一天
 
     public interface OnItemClickLitener {
         void onItemClick(View view, int position);
@@ -36,17 +36,23 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
+    static {loginTime = CurrentTime.getTime();}
+
     public TodayAdapter() {
 
         if (CurrentTime.getTime() > loginTime)
             loginTime = CurrentTime.getTime();
+
         journalDB = JournalDB.getInstance(MyApplication.getContext());
+        journalDB.saveTime(loginTime);
         mDatas = journalDB.loadNote(loginTime);
         if (mDatas == null ) {
             LogUtil.e("TodayAdapter", "mdatas is null");
             mDatas = new ArrayList<>();
             List<String> mHints = journalDB.loadHint();
-            LogUtil.e("AllAdapter。看这里", mHints.toString());
+//            if (mHints == null) {
+//                mHints = new ArrayList<>();
+//            }
             if (mHints != null) {
                 // 有些地方依赖于当前的设计，有必要注释！！！
                 // 这里是每天第一次打开程序，就要把日期存储。ok
@@ -57,6 +63,7 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                 // 在todayactivity离开时应杀死。
                 // 如果allactivity中包含今天的内容，那么也应该杀死。不含
                 // 标签如果实现了拖拽功能，必须要记录顺序。
+                LogUtil.e("TodayAdapter", mHints.toString());
                 for (int i = 0; i < mHints.size(); i++) {
                     Note saveNote = new Note(loginTime, mHints.get(i), "");
                     journalDB.saveNote(saveNote, true);
@@ -64,8 +71,6 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
                 mDatas = journalDB.loadNote(loginTime);
             }
             LogUtil.e("TodayAdapter.看这里", mDatas.toString());
-            journalDB.saveTime(loginTime);
-            // 既然写在这里，todayActivity必须是第一个启动的Activity。
         }
         LogUtil.e("TodayAdapter.看这里", mDatas.toString()+"isnot null");
 

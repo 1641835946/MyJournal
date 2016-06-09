@@ -7,6 +7,7 @@ import android.support.v7.widget.RecyclerView;
 import com.example.administrator.myjournal.R;
 import com.example.administrator.myjournal.db.JournalDB;
 import com.example.administrator.myjournal.util.AllAdapter;
+import com.example.administrator.myjournal.util.LogUtil;
 
 /**
  * Created by Administrator on 2016/6/6.
@@ -24,5 +25,6 @@ public class AllActivity extends BaseActivity {
         mRecyclerView = (RecyclerView) findViewById(R.id.all_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
         mRecyclerView.setAdapter(mAdapter = new AllAdapter());
+        LogUtil.e("AllActivity","执行了");
     }
 }

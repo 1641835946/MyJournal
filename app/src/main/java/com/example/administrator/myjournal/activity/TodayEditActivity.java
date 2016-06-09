@@ -67,6 +67,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         Hint hint = journalDB.loadHint(tagText);
         hintView.setText(hint.getDefinition());
         note = journalDB.loadNote(time, tagText);
+        LogUtil.e("todayEditActivity", "time:"+time+"/tag:"+tagText);
         LogUtil.e("TodayEditActivity", note.toString());
         //if (note.getDefinition() == "") {
             //editText.setText(note.getDefinition());
@@ -210,14 +211,18 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         if(cursor!=null){
             if(cursor.moveToFirst()){
                 path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+                LogUtil.e("TodayEditActivity", "getImagePath:"+path);
             }
             cursor.close();
         }
+        LogUtil.e("TodayEditActivity", path);
         return path;
     }
 
+    //open failed: EACCES (Permission denied)
     private void getImagePath(String text) {
         if (!TextUtils.isEmpty(text)) {
+            LogUtil.e("TodayEditActivity", text);
             String[] array = text.split("\\|");
             if (array != null) {
                 int i = 0;

@@ -29,22 +29,29 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
     public AllAdapter() {
         journalDB = JournalDB.getInstance(MyApplication.getContext());
         mDatas = new ArrayList<>();
-        List<Long> timeList = new ArrayList<>();
+        List<Long> timeList;
         timeList = journalDB.loadTime();
-        List<String> tagList = new ArrayList<>();
+        List<String> tagList;
         tagList = journalDB.loadHint();
+        LogUtil.e("AllAdapter", "执行了");
         if (timeList != null && tagList != null) {
-            for (int i = 0; i < timeList.size()-1; i++) {//不含今天。
+            LogUtil.e("AllAdapter", "并不是null");
+            LogUtil.e("AllAdapter", ""+timeList.size());
+            LogUtil.e("timeList.0", ""+timeList.get(0));
+            for (int i = 0; i < timeList.size(); i++) {//不含今天。
                 String noteStr = null;
                 for (int j = 0; j <tagList.size(); j++) {
                     Note note = journalDB.loadNote(timeList.get(i),tagList.get(j));
                     noteStr = "\n" + note.getTag() + ":" + "\n" + note.getDefinition();
+                    LogUtil.e("AllAdapter", noteStr);
                 }
                 Note loadNote = new Note();
                 long time = timeList.get(i);
-                loadNote.setTag("" + time/10000 + time%10000/100 + time%1000000);
+                LogUtil.e("AllAdapter", "" +time);
+                loadNote.setTag("" + time / 10000 +"."+ time % 10000 / 100 +"."+ time % 100);
                 loadNote.setDefinition(noteStr);
                 mDatas.add(loadNote);
+                LogUtil.e("AllAdapter", "add 一次");
             }
         }
     }

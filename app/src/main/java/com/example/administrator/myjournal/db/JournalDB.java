@@ -48,9 +48,22 @@ public class JournalDB {
     public void saveTime(long time) {
         ContentValues values = new ContentValues();
         values.put("day", time);
-        db.insert("DayTable", null, values);
+        if (!hasTime(time)) {
+            db.insert("DayTable", null, values);
+        }
     }
 
+    public boolean hasTime(long time) {
+        boolean flags = false;
+        Cursor cursor = db.query("DayTable", null, "day = ?", new String[]{String.valueOf(time)} , null, null, null);
+        if (cursor.moveToFirst()) {
+            flags = true;
+        }
+        if (cursor != null) {
+            cursor.close();
+        }
+        return flags;
+    }
     public List<Long> loadTime() {
         List<Long> timeStr = new ArrayList<Long>();
         Cursor cursor = db.query("DayTable", null, null, null, null, null, null);

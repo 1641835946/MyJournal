@@ -36,12 +36,13 @@ public class AddTagActivity extends BaseActivity {
         tag = (EditText) findViewById(R.id.add_tag);
         definition = (EditText) findViewById(R.id.add_definition);
         certainButton = (Button) findViewById(R.id.add_tag_button);
-        tagText = tag.getText().toString();
-        if (tagText != null)
-            LogUtil.e("AddTagActivity", "is not null");
+//        tagText = tag.getText().toString();
+//        if (tagText != null)
+//            LogUtil.e("AddTagActivity", "is not null");
         certainButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                tagText = tag.getText().toString();
                 if (!tagText.isEmpty() && !definition.getText().toString().isEmpty()) {
                     Hint hint = new Hint();
                     hint.setDefinition(definition.getText().toString());
