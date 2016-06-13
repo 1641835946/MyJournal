@@ -9,4 +9,6 @@
     <string name="Export">导出</string>
     <string name="Photo">拍照</string>
     <string name="PhotoImport">插入</string>
+    <string name="title_activity_history">HistoryActivity</string>
+    <string name="title_activity_day_look">DayLookActivity</string>
 </resources>

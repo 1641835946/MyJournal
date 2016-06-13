@@ -4,6 +4,7 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +22,11 @@ import java.util.List;
  * Created by Administrator on 2016/6/3.
  */
 public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> {
-
-    private JournalDB journalDB;
     public List<Note> mDatas;
-    public static long loginTime;//同一次的编辑在同一天
-
+//    private JournalDB journalDB;
+//    public List<Note> mDatas;
+//    public static long loginTime;//同一次的编辑在同一天
+    private TodayHelper helper;
     public interface OnItemClickLitener {
         void onItemClick(View view, int position);
     }
@@ -36,43 +37,32 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
         this.mOnItemClickLitener = mOnItemClickLitener;
     }
 
-    static {loginTime = CurrentTime.getTime();}
-
     public TodayAdapter() {
-
-        if (CurrentTime.getTime() > loginTime)
-            loginTime = CurrentTime.getTime();
-
-        journalDB = JournalDB.getInstance(MyApplication.getContext());
-        journalDB.saveTime(loginTime);
-        mDatas = journalDB.loadNote(loginTime);
-        if (mDatas == null ) {
-            LogUtil.e("TodayAdapter", "mdatas is null");
-            mDatas = new ArrayList<>();
-            List<String> mHints = journalDB.loadHint();
-//            if (mHints == null) {
-//                mHints = new ArrayList<>();
+        helper = new TodayHelper();
+        mDatas = helper.mDatas;
+        //LogUtil.e("TodayAdapter:mDatas", mDatas.get(0).getDefinition());
+//        if (mDatas.size() == 0) {
+//            LogUtil.e("TodayAdapter", "mdatas is null");
+//            if (mHints != null) {
+//                // 有些地方依赖于当前的设计，有必要注释！！！
+//                // 这里是每天第一次打开程序，就要把日期存储。ok
+//                // 为了不必每次保存前都要判断是update还是insert，ok
+//                // 在每天第一次打开程序就先insert。ok
+//                // 且标签的数量增加时，应插入note数据 ok
+//                // 为了同步，防止如标签增删了todayactivity却没有改变，
+//                // 在todayactivity离开时应杀死。
+//                // 如果allactivity中包含今天的内容，那么也应该杀死。不含
+//                // 标签如果实现了拖拽功能，必须要记录顺序。
+//                LogUtil.e("TodayAdapter", mHints.toString());
+//                for (int i = 0; i < mHints.size(); i++) {
+//                    Note saveNote = new Note(loginTime, mHints.get(i), "");
+//                    journalDB.saveNote(saveNote, true);
+//                }
+//                mDatas = journalDB.loadNote(loginTime);
 //            }
-            if (mHints != null) {
-                // 有些地方依赖于当前的设计，有必要注释！！！
-                // 这里是每天第一次打开程序，就要把日期存储。ok
-                // 为了不必每次保存前都要判断是update还是insert，ok
-                // 在每天第一次打开程序就先insert。ok
-                // 且标签的数量增加时，应插入note数据 ok
-                // 为了同步，防止如标签增删了todayactivity却没有改变，
-                // 在todayactivity离开时应杀死。
-                // 如果allactivity中包含今天的内容，那么也应该杀死。不含
-                // 标签如果实现了拖拽功能，必须要记录顺序。
-                LogUtil.e("TodayAdapter", mHints.toString());
-                for (int i = 0; i < mHints.size(); i++) {
-                    Note saveNote = new Note(loginTime, mHints.get(i), "");
-                    journalDB.saveNote(saveNote, true);
-                }
-                mDatas = journalDB.loadNote(loginTime);
-            }
-            LogUtil.e("TodayAdapter.看这里", mDatas.toString());
-        }
-        LogUtil.e("TodayAdapter.看这里", mDatas.toString()+"isnot null");
+//            LogUtil.e("TodayAdapter.看这里", mDatas.toString());
+//        }
+//        LogUtil.e("TodayAdapter.看这里", mDatas.toString()+"isnot null");
 
 //        Note note1 = new Note();
 //        note1.setTime(20150603);

@@ -24,10 +24,12 @@ import android.widget.TextView;
 import com.example.administrator.myjournal.R;
 import com.example.administrator.myjournal.db.JournalDB;
 import com.example.administrator.myjournal.model.Note;
+import com.example.administrator.myjournal.util.CurrentTime;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 import com.example.administrator.myjournal.util.TagAdapter;
 import com.example.administrator.myjournal.util.TodayAdapter;
+import com.example.administrator.myjournal.util.TodayHelper;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -56,8 +58,8 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
         mAdapter.setOnItemClickLitener(this);
         List<Long> timeList = journalDB.loadTime();
-        List<String> hintList = journalDB.loadHint();
-        List<Note> noteList = journalDB.loadNote();
+        List<String> hintList = journalDB.loadHintWithString();
+        List<Note> noteList = journalDB.loadNote(CurrentTime.getTime());
         if (timeList != null) {
             LogUtil.e("测试数据库todayactivity", "timetable isn't null");
             //之前20160607没有，检查是否存在，否就添加。现在有了，但不一定明天还行
@@ -115,6 +117,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         super.onStart();
         mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
         mAdapter.setOnItemClickLitener(this);
+        //Adapter.notifyDataSetChanged();
     }
 
     @Override
@@ -145,7 +148,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
             case 1:
                 if (resultCode == RESULT_OK) {
                     mAdapter.removeData(mPosition);
-                    mAdapter.addData(mPosition, new Note(TodayAdapter.loginTime, mTag, data.getStringExtra("content")));
+                    mAdapter.addData(mPosition, new Note(TodayHelper.loginTime, mTag, data.getStringExtra("content")));
 //                    LogUtil.e("todayactivity", "第1");
 //                    mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
 //                    LogUtil.e("todayactivity", "第2");
@@ -179,12 +182,12 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
             startActivity(tagListIntent);
 
         } else if (id == R.id.allList) {
-            Intent allListIntent = new Intent(TodayActivity.this, AllActivity.class);
+            Intent allListIntent = new Intent(TodayActivity.this, HistoryActivity.class);
             startActivity(allListIntent);
 
         } else if (id == R.id.dayList) {
-            Intent dayListIntent = new Intent(TodayActivity.this, DayLookingActivity.class);
-            startActivity(dayListIntent);
+//            Intent dayListIntent = new Intent(TodayActivity.this, DayLookingActivity.class);
+//            startActivity(dayListIntent);
 
         } else if (id == R.id.nav_share) {
 

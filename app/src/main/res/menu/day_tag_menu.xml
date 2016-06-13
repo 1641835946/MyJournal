@@ -5,10 +5,10 @@
         android:id="@+id/day_tag_photo"
         android:orderInCategory="100"
         android:title="@string/Photo"
-        app:showAsAction="never" />
+        />
     <item
         android:id="@+id/day_tag_insert"
         android:orderInCategory="100"
         android:title="@string/PhotoImport"
-        app:showAsAction="never" />
+        />
 </menu>

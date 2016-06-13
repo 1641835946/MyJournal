@@ -1,6 +1,5 @@
 package com.example.administrator.myjournal.util;
 
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -9,49 +8,44 @@ import android.widget.TextView;
 
 import com.example.administrator.myjournal.R;
 import com.example.administrator.myjournal.db.JournalDB;
-import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
 
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by Administrator on 2016/6/6.
  */
-public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
+public class HistoryAdapter extends RecyclerView.Adapter<HistoryAdapter.ViewHolder> {
 
     private JournalDB journalDB;
     private List<Note> mDatas;
 
-    public AllAdapter() {
+    public HistoryAdapter() {
         journalDB = JournalDB.getInstance(MyApplication.getContext());
         mDatas = new ArrayList<>();
         List<Long> timeList;
         timeList = journalDB.loadTime();
         List<String> tagList;
-        tagList = journalDB.loadHint();
-        LogUtil.e("AllAdapter", "执行了");
+        tagList = journalDB.loadHintWithString();
         if (timeList != null && tagList != null) {
-            LogUtil.e("AllAdapter", "并不是null");
-            LogUtil.e("AllAdapter", ""+timeList.size());
+            LogUtil.e("HistoryAdapter", "并不是null");
+            LogUtil.e("HistoryAdapter", ""+timeList.size());
             LogUtil.e("timeList.0", ""+timeList.get(0));
-            for (int i = 0; i < timeList.size(); i++) {//不含今天。
-                String noteStr = null;
-                for (int j = 0; j <tagList.size(); j++) {
+            for (int i = 0; i < timeList.size() ; i++) {//不含今天。
+                String noteStr = "";
+                LogUtil.e("HistoryAdapter：打出来了吗？0", noteStr);//不知怎的，没有执行！！！
+                for (int j = 0; j <tagList.size() - 1; j++) {
+                    LogUtil.e("HistoryAdapter：打出来了吗？1", noteStr);//不知怎的，没有执行！！！
                     Note note = journalDB.loadNote(timeList.get(i),tagList.get(j));
-                    noteStr = "\n" + note.getTag() + ":" + "\n" + note.getDefinition();
-                    LogUtil.e("AllAdapter", noteStr);
+                    noteStr = noteStr + "\n" + note.getTag() + ":" + "\n" + note.getDefinition();
+                    LogUtil.e("HistoryAdapter：打出来了吗？", noteStr);//不知怎的，没有执行！！！
                 }
                 Note loadNote = new Note();
                 long time = timeList.get(i);
-                LogUtil.e("AllAdapter", "" +time);
-                loadNote.setTag("" + time / 10000 +"."+ time % 10000 / 100 +"."+ time % 100);
+                loadNote.setTag("" + time / 10000 + "." + time % 10000 / 100 + "." + time % 100);
                 loadNote.setDefinition(noteStr);
                 mDatas.add(loadNote);
-                LogUtil.e("AllAdapter", "add 一次");
             }
         }
     }
@@ -59,7 +53,7 @@ public class AllAdapter extends RecyclerView.Adapter<AllAdapter.ViewHolder> {
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = new ViewHolder(LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.all_item, parent,
+                parent.getContext()).inflate(R.layout.day_item, parent,
                 false));
         return holder;
     }

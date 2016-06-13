@@ -48,8 +48,9 @@ public class TagLookingAdapter extends RecyclerView.Adapter<TagLookingAdapter.Vi
 
     @Override
     public int getItemCount() {
-        return mDatas.size();
+        return mDatas.size()-1;
     }
+    //在mDatas.remove(mDatas.size()-1);之前运行，且没有随着数据的删减而改变，所以手动减一。
 
     class ViewHolder extends RecyclerView.ViewHolder {
 

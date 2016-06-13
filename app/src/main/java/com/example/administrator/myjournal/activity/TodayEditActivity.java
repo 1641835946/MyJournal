@@ -28,6 +28,7 @@ import com.example.administrator.myjournal.db.JournalDB;
 import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.CurrentTime;
+import com.example.administrator.myjournal.util.DisplayEditText;
 import com.example.administrator.myjournal.util.InsertPicEditText;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
@@ -36,7 +37,7 @@ import com.example.administrator.myjournal.util.MyApplication;
  * Created by Administrator on 2016/6/3.
  */
 public class TodayEditActivity extends BaseActivity implements View.OnClickListener {
-
+//如何复用代码:类，接口？？？
     public static final int CHOOSE_PHOTO = 1;
     private TextView tagView;
     private TextView hintView;
@@ -46,6 +47,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
     private Note note;
     private String tagText;
     private long time;
+    private DisplayEditText displayEdit;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +61,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         hintView = (TextView) findViewById(R.id.today_edit_hint);
         editText = (InsertPicEditText) findViewById(R.id.today_edit_content);
         certainButton = (Button) findViewById(R.id.today_edit_certain);
+
         time = CurrentTime.getTime();
         Intent receiveIntent = getIntent();
         tagText = receiveIntent.getStringExtra("tag");
@@ -72,7 +75,8 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         //if (note.getDefinition() == "") {
             //editText.setText(note.getDefinition());
         //}
-        getImagePath(note.getDefinition());
+        displayEdit = new DisplayEditText(TodayEditActivity.this, editText);
+        displayEdit.getImagePath(note.getDefinition());
         certainButton.setOnClickListener(this);
         editText.setFocusable(false);
         certainButton.requestFocus();
@@ -196,13 +200,13 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         }else if("content".equalsIgnoreCase(uri.getScheme())){
             imagePath=getImagePath(uri,null);
         }
-        displayImage(imagePath);
+        displayEdit.displayImage(imagePath);
     }
 
     private void handleImageBeforeKitKat(Intent data){
         Uri uri=data.getData();
-        String imagePath=getImagePath(uri,null);
-        displayImage(imagePath);
+        String imagePath=getImagePath(uri, null);
+        displayEdit.displayImage(imagePath);
     }
 
     private String getImagePath(Uri uri,String selection){
@@ -217,41 +221,6 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         }
         LogUtil.e("TodayEditActivity", path);
         return path;
-    }
-
-    //open failed: EACCES (Permission denied)
-    private void getImagePath(String text) {
-        if (!TextUtils.isEmpty(text)) {
-            LogUtil.e("TodayEditActivity", text);
-            String[] array = text.split("\\|");
-            if (array != null) {
-                int i = 0;
-                while (i < array.length) {
-                    if (!array[i].isEmpty()) {
-                        if ((array[i].substring(0, 3)).equals("img")) {
-                            displayImage(array[i].substring(3));
-                        } else editText.append(array[i]);
-                    }
-                    i++;
-                }
-            }
-        }
-    }
-
-    private void displayImage(String imagePath){
-        if(imagePath!=null){
-            Bitmap bitmap= BitmapFactory.decodeFile(imagePath);
-            SpannableString mSpan1 = editText.displayBitmap(bitmap, imagePath);
-            if (mSpan1 != null) {
-                int start = editText.getSelectionStart();
-                Editable et = editText.getText();
-                et.insert(start, mSpan1);
-                editText.setText(et);
-                editText.setSelection(start + mSpan1.length());
-            }
-        }else{
-            Toast.makeText(this,"获取图片失败",Toast.LENGTH_SHORT).show();
-        }
     }
 
 }

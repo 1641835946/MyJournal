@@ -3,6 +3,7 @@ package com.example.administrator.myjournal.activity;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.Snackbar;
+import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,6 +17,7 @@ import com.example.administrator.myjournal.util.ActivityCollector;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 import com.example.administrator.myjournal.util.TodayAdapter;
+import com.example.administrator.myjournal.util.TodayHelper;
 
 /**
  * Created by Administrator on 2016/6/2.
@@ -48,11 +50,13 @@ public class AddTagActivity extends BaseActivity {
                     hint.setDefinition(definition.getText().toString());
                     hint.setTag(tagText);
                     journalDB.saveHint(hint);
-                    Note addNote = new Note(TodayAdapter.loginTime, tagText, "");
+                    TodayHelper todayHelper = new TodayHelper();
+                    Note addNote = new Note(todayHelper.loginTime, tagText, "");
                     journalDB.saveNote(addNote, true);
                     LogUtil.e("AddTagActivity", "saveHint");
                     Intent intent = new Intent();
-                    //intent.putExtra("backHintString", tag.getText().toString());
+                    intent.putExtra("backHint", tag.getText().toString());
+                    intent.putExtra("backDefinition", definition.getText().toString());
                     setResult(RESULT_OK, intent);
                     ActivityCollector.removeActivity(AddTagActivity.this);
                     AddTagActivity.this.finish();
