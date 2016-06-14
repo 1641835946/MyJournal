@@ -208,7 +208,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         String imagePath=getImagePath(uri, null);
         displayEdit.displayImage(imagePath);
     }
-
+//hello world，git
     private String getImagePath(Uri uri,String selection){
         String path=null;
         Cursor cursor=getContentResolver().query(uri, null,selection,null,null);
