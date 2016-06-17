@@ -1,7 +1,6 @@
 package com.example.administrator.myjournal.util;
 
 import android.graphics.Color;
-import android.support.annotation.NonNull;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,11 +14,8 @@ import com.example.administrator.myjournal.helper.ItemTouchHelperViewHolder;
 import com.example.administrator.myjournal.model.Hint;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 
 /**
  * Created by Administrator on 2016/6/2.
@@ -54,7 +50,7 @@ public class TagAdapter extends RecyclerView.Adapter<TagAdapter.ViewHolder> impl
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = new ViewHolder(LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.tag_item, parent,
+                parent.getContext()).inflate(R.layout.item_tag, parent,
                 false));
         return holder;
     }

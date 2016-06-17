@@ -1,26 +1,18 @@
 package com.example.administrator.myjournal.activity;
 
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.pm.ResolveInfo;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
-import android.support.design.widget.Snackbar;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -31,12 +23,9 @@ import com.example.administrator.myjournal.util.CurrentTime;
 import com.example.administrator.myjournal.util.Export;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
-import com.example.administrator.myjournal.util.TagAdapter;
 import com.example.administrator.myjournal.util.TodayAdapter;
 import com.example.administrator.myjournal.util.TodayHelper;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -101,7 +90,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         LogUtil.e("todayactivity", "点击了");
         TextView tag = (TextView) view.findViewById(R.id.today_title);
         mTag = tag.getText().toString();
-        Intent intent = new Intent(TodayActivity.this, TodayEditActivity.class);
+        Intent intent = new Intent(TodayActivity.this, EditTodayActivity.class);
         intent.putExtra("tag", mTag);
         startActivityForResult(intent, 1);
         LogUtil.e("todayactivity", "跳转了");
@@ -142,21 +131,25 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         //noinspection SimplifiableIfStatement
         if (id == R.id.today_menu) {
             //导出当天的所有，用印象笔记，以日期命名。
-            long time = TodayHelper.loginTime;
-            Intent share = new Export().exportMethod(time);
-            try {
-                startActivity(Intent.createChooser(share, "分享一下"));
-            } catch (android.content.ActivityNotFoundException ex) {
-                Toast.makeText(this, "Can't find share component to share", Toast.LENGTH_SHORT).show();
-            }
+            exportToday();
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void exportToday() {
+        long time = TodayHelper.loginTime;
+        Intent share = new Export().exportMethod(time);
+        try {
+            startActivity(Intent.createChooser(share, "分享一下"));
+        } catch (android.content.ActivityNotFoundException ex) {
+            Toast.makeText(this, "Can't find share component to share", Toast.LENGTH_SHORT).show();
+        }
 //            if (share != null) {
 //                startActivity(Intent.createChooser(share, "分享一下"));
 //            } else {
 //                Toast.makeText(TodayActivity.this, "Fail", Toast.LENGTH_SHORT).show();
 //            }
-            return true;
-        }
-        return super.onOptionsItemSelected(item);
     }
 
     @Override
@@ -174,7 +167,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
 //                        public void onItemClick(View view, int position) {
 //                            LogUtil.e("todayactivity", "点击了");
 //                            TextView tag = (TextView) findViewById(R.id.today_title);
-//                            Intent intent = new Intent(TodayActivity.this, TodayEditActivity.class);
+//                            Intent intent = new Intent(TodayActivity.this, EditTodayActivity.class);
 //                            intent.putExtra("tag", tag.getText().toString());
 //                            startActivityForResult(intent, 1);
 //                            LogUtil.e("todayactivity", "跳转了");
@@ -192,9 +185,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         // Handle navigation view item clicks here.
         int id = item.getItemId();
 
-        if (id == R.id.nav_manage) {
-            // Handle the camera action
-        } else if (id == R.id.tagList) {
+        if (id == R.id.tagList) {
             Intent tagListIntent = new Intent(TodayActivity.this, TagActivity.class);
             startActivity(tagListIntent);
 
@@ -202,18 +193,22 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
             Intent allListIntent = new Intent(TodayActivity.this, HistoryActivity.class);
             startActivity(allListIntent);
 
-        } else if (id == R.id.dayList) {
-//            Intent dayListIntent = new Intent(TodayActivity.this, DayLookingActivity.class);
-//            startActivity(dayListIntent);
+        } else if (id == R.id.exportToday) {
+            exportToday();
 
-        } else if (id == R.id.nav_share) {
-
-        } else if (id == R.id.nav_send) {//目的，使用方法
-
+        } else if (id == R.id.exportAll) {
+            Export export = new Export();
+            String exportContent = export.allDay();
+            Intent share = export.exportMethod(exportContent);
+            try {
+                startActivity(Intent.createChooser(share, "分享一下"));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "Can't find share component to share", Toast.LENGTH_SHORT).show();
+            }
         }
 
-        DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        drawer.closeDrawer(GravityCompat.START);
+        //DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
+        //drawer.closeDrawer(GravityCompat.START);//这是关闭抽屉
         return true;
     }
 }

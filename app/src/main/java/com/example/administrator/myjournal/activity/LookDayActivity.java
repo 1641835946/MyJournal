@@ -2,43 +2,37 @@ package com.example.administrator.myjournal.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
-import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.myjournal.R;
-import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.Export;
 import com.example.administrator.myjournal.util.TodayHelper;
 
-import java.util.List;
-
-public class DayLookActivity extends AppCompatActivity {
+public class LookDayActivity extends AppCompatActivity {
 
     private TodayHelper helper;
-    private EditText contentView;
+    private TextView contentView;
     private String content;
     private long time;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_day_look);
+        setContentView(R.layout.activity_look_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.day_look_bar);
+        toolbar.setTitle("一天");
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
         time = intent.getLongExtra("time", 0);
         helper = new TodayHelper(time);
 
-        contentView = (EditText) findViewById(R.id.day_content);
+        contentView = (TextView) findViewById(R.id.day_content);
         content = new Export().aDay(time);
         contentView.setText(content);
     }

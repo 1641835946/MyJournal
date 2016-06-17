@@ -2,6 +2,7 @@ package com.example.administrator.myjournal.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.TextView;
@@ -13,9 +14,8 @@ import com.example.administrator.myjournal.util.Export;
 /**
  * Created by Administrator on 2016/6/3.
  */
-public class TagLookingActivity extends BaseActivity {
+public class LookTagActivity extends BaseActivity {
 
-    private TextView titleView;
     private String title;
     private TextView contentView;
     private String content;
@@ -23,11 +23,15 @@ public class TagLookingActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tag_looking_layout);
+        setContentView(R.layout.activity_look_tag);
+
         Intent intent = getIntent();
         title = intent.getStringExtra("title");
-        titleView = (TextView) findViewById(R.id.look_tag_title);
-        titleView.setText(title);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tag_look_bar);
+        toolbar.setTitle(title);
+        setSupportActionBar(toolbar);
+
         content = new Export().allTag(title);
         contentView = (TextView) findViewById(R.id.look_tag_content);
         contentView.setText(content);

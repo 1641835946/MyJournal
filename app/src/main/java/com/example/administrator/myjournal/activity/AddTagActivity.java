@@ -2,8 +2,6 @@ package com.example.administrator.myjournal.activity;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.design.widget.Snackbar;
-import android.support.v7.widget.ThemedSpinnerAdapter;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -16,7 +14,6 @@ import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.ActivityCollector;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
-import com.example.administrator.myjournal.util.TodayAdapter;
 import com.example.administrator.myjournal.util.TodayHelper;
 
 /**
@@ -32,7 +29,7 @@ public class AddTagActivity extends BaseActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.change_tag_layout);
+        setContentView(R.layout.activity_add_tag);
         journalDB = JournalDB.getInstance(MyApplication.getContext());
         //context 不一样会怎样，报错？？？
         tag = (EditText) findViewById(R.id.add_tag);

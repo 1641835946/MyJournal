@@ -37,15 +37,15 @@
         <activity
             android:name=".activity.AddTagActivity"
             android:theme="@style/Theme.AppCompat.Light.Dialog" />
-        <activity android:name=".activity.TagLookingActivity" />
-        <activity android:name=".activity.TodayEditActivity" />
+        <activity android:name=".activity.LookTagActivity" />
+        <activity android:name=".activity.EditTodayActivity" />
         <activity
             android:name=".activity.HistoryActivity"
             android:label="@string/title_activity_history"
             android:theme="@style/AppTheme.NoActionBar"
             />
         <activity
-            android:name=".activity.DayLookActivity"
+            android:name=".activity.LookDayActivity"
             android:label="@string/title_activity_day_look"
             android:theme="@style/AppTheme"></activity>
     </application>

@@ -36,7 +36,7 @@ public class HistoryActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Toolbar toolbar = (Toolbar) findViewById(R.id.histor_bar);
-        toolbar.setTitle("History");// 标题的文字需在setSupportActionBar之前，不然会无效
+        toolbar.setTitle("所有");// 标题的文字需在setSupportActionBar之前，不然会无效
         setSupportActionBar(toolbar);
 
         /* 这些通过ActionBar来设置也是一样的，注意要在setSupportActionBar(toolbar);之后，不然就报错了 */
@@ -64,7 +64,7 @@ public class HistoryActivity extends BaseActivity {
                         day = dayOfMonth;
                         long time = HistoryActivity.this.year * 10000 + month * 100 + day;
                         if (journalDB.hasTime(time) && time != TodayHelper.loginTime) {
-                            Intent intent = new Intent(HistoryActivity.this, DayLookActivity.class);
+                            Intent intent = new Intent(HistoryActivity.this, LookDayActivity.class);
                             intent.putExtra("time", time);
                             startActivity(intent);
                         } else {
@@ -99,4 +99,5 @@ public class HistoryActivity extends BaseActivity {
         }
         return super.onOptionsItemSelected(item);
     }
+
 }

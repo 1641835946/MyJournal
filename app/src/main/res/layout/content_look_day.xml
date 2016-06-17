@@ -9,13 +9,16 @@
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
     app:layout_behavior="@string/appbar_scrolling_view_behavior"
-    tools:context="com.example.administrator.myjournal.activity.DayLookActivity"
-    tools:showIn="@layout/activity_day_look">
+    tools:context=".activity.LookDayActivity"
+    tools:showIn="@layout/activity_look_day">
 
-    <EditText
-        android:id="@+id/day_content"
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:focusable="false"/>
-
+        android:layout_height="match_parent">
+        <TextView
+            android:id="@+id/day_content"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:focusable="false"/>
+    </ScrollView>
 </RelativeLayout>

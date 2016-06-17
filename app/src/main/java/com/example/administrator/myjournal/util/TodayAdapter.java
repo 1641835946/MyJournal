@@ -1,21 +1,14 @@
 package com.example.administrator.myjournal.util;
 
-import android.support.design.widget.NavigationView;
-import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
 import com.example.administrator.myjournal.R;
-import com.example.administrator.myjournal.db.JournalDB;
-import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
 
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -86,7 +79,7 @@ public class TodayAdapter extends RecyclerView.Adapter<TodayAdapter.ViewHolder> 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         ViewHolder holder = new ViewHolder(LayoutInflater.from(
-                parent.getContext()).inflate(R.layout.today_item, parent,
+                parent.getContext()).inflate(R.layout.item_today, parent,
                 false));
         return holder;
     }

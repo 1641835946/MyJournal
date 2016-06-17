@@ -1,27 +1,12 @@
 package com.example.administrator.myjournal.activity;
 
-import android.annotation.TargetApi;
-import android.content.ContentUris;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.database.Cursor;
-import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.net.Uri;
-import android.os.Build;
 import android.os.Bundle;
-import android.provider.DocumentsContract;
-import android.provider.MediaStore;
-import android.text.Editable;
-import android.text.SpannableString;
-import android.text.TextUtils;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.administrator.myjournal.R;
 import com.example.administrator.myjournal.db.JournalDB;
@@ -35,10 +20,9 @@ import com.example.administrator.myjournal.util.MyApplication;
 /**
  * Created by Administrator on 2016/6/3.
  */
-public class TodayEditActivity extends BaseActivity implements View.OnClickListener {
+public class EditTodayActivity extends BaseActivity implements View.OnClickListener {
 //如何复用代码:类，接口？？？
     public static final int CHOOSE_PHOTO = 1;
-    private TextView tagView;
     private TextView hintView;
     //private InsertPicEditText editText;
     private EditText editText;
@@ -52,31 +36,32 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.today_edit_layout);
+        setContentView(R.layout.activity_edit_today);
         init();
     }
 
     private void init() {
-        tagView = (TextView) findViewById(R.id.today_edit_tag);
         hintView = (TextView) findViewById(R.id.today_edit_hint);
-        //editText = (InsertPicEditText) findViewById(R.id.today_edit_content);
+        //editText = (InsertPicEditText) findViewById(R.id.content_edit_today);
         editText = (EditText) findViewById(R.id.today_edit_content);
         certainButton = (Button) findViewById(R.id.today_edit_certain);
 
         time = CurrentTime.getTime();
         Intent receiveIntent = getIntent();
         tagText = receiveIntent.getStringExtra("tag");
-        tagView.setText(tagText);
+        Toolbar toolbar = (Toolbar) findViewById(R.id.today_edit_bar);
+        toolbar.setTitle(tagText);
+        setSupportActionBar(toolbar);
         journalDB = JournalDB.getInstance(MyApplication.getContext());
         Hint hint = journalDB.loadHint(tagText);
         hintView.setText(hint.getDefinition());
         note = journalDB.loadNote(time, tagText);
-        LogUtil.e("todayEditActivity", "time:"+time+"/tag:"+tagText);
-        LogUtil.e("TodayEditActivity", note.toString());
+        LogUtil.e("EditTodayActivity", "time:"+time+"/tag:"+tagText);
+        LogUtil.e("EditTodayActivity", note.toString());
         //if (note.getDefinition() == "") {
         editText.setText(note.getDefinition());
         //}
-//        displayEdit = new DisplayEditText(TodayEditActivity.this, editText);
+//        displayEdit = new DisplayEditText(EditTodayActivity.this, editText);
 //        displayEdit.getImagePath(note.getDefinition());
         certainButton.setOnClickListener(this);
         editText.setFocusable(false);
@@ -88,7 +73,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         if ("保存".equals(certainButton.getText().toString())) {
 //            if (preContent.isEmpty()) {
 //                if (editText.getText().toString().isEmpty()) {
-//                    Toast.makeText(TodayEditActivity.this, "未保存，不能保存空的内容", Toast.LENGTH_SHORT).show();
+//                    Toast.makeText(EditTodayActivity.this, "未保存，不能保存空的内容", Toast.LENGTH_SHORT).show();
 //                } else {
 //                    note.setTime(time);
 //                    note.setTag(tagText);
@@ -127,7 +112,6 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
             editText.requestFocus();
         }
     }
-
 
     @Override
     public void onBackPressed() {

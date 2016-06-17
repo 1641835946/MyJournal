@@ -21,7 +21,7 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/today_layout" />
+    <include layout="@layout/content_today" />
 
 
 </android.support.design.widget.CoordinatorLayout>

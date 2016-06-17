@@ -9,27 +9,25 @@
         <item
             android:id="@+id/allList"
             android:icon="@drawable/ic_menu_gallery"
-            android:title="所有" />
-        <item
-            android:id="@+id/dayList"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="某天" />
-        <item
-            android:id="@+id/nav_manage"
-            android:icon="@drawable/ic_menu_manage"
-            android:title="Tools" />
+            android:title="历史" />
     </group>
 
-    <item android:title="Communicate">
+    <item android:title="分类">
         <menu>
             <item
-                android:id="@+id/nav_share"
+                android:id="@+id/exportToday"
                 android:icon="@drawable/ic_menu_share"
-                android:title="导出" />
+                android:title="导出今天" />
+            <!--
             <item
-                android:id="@+id/nav_send"
+                android:id="@+id/exportTag"
                 android:icon="@drawable/ic_menu_send"
-                android:title="关于" />
+                android:title="导出标签" />
+                -->
+            <item
+                android:id="@+id/exportAll"
+                android:icon="@drawable/ic_menu_slideshow"
+                android:title="导出所有" />
         </menu>
     </item>
 

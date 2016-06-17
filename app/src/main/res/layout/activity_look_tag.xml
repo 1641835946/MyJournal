@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fitsSystemWindows="true"
-    tools:context="com.example.administrator.myjournal.activity.DayLookActivity">
+    tools:context=".activity.LookTagActivity">
 
     <android.support.design.widget.AppBarLayout
         android:layout_width="match_parent"
@@ -14,7 +14,7 @@
         >
 
         <android.support.v7.widget.Toolbar
-            android:id="@+id/day_look_bar"
+            android:id="@+id/tag_look_bar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBlue"
@@ -23,6 +23,8 @@
 
     </android.support.design.widget.AppBarLayout>
 
-    <include layout="@layout/content_day_look" />
+    <include layout="@layout/content_look_tag" />
 
 </android.support.design.widget.CoordinatorLayout>
+
+

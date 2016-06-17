@@ -1,21 +1,14 @@
 package com.example.administrator.myjournal.activity;
 
-import android.app.AlertDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
-import android.view.Window;
 import android.widget.TextView;
 
 import com.example.administrator.myjournal.R;
@@ -24,12 +17,8 @@ import com.example.administrator.myjournal.helper.OnStartDragListener;
 import com.example.administrator.myjournal.helper.SimpleItemTouchHelperCallback;
 import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
-import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 import com.example.administrator.myjournal.util.TagAdapter;
-import com.example.administrator.myjournal.util.TodayAdapter;
-
-import java.util.List;
 
 /**
  * Created by Administrator on 2016/5/30.
@@ -44,8 +33,9 @@ public class TagActivity extends BaseActivity implements OnStartDragListener, Ta
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.tag_layout);
+        setContentView(R.layout.activity_tag);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        toolbar.setTitle("标签");
         setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.id_recyclerview);
@@ -79,7 +69,7 @@ public class TagActivity extends BaseActivity implements OnStartDragListener, Ta
     @Override
     public void onItemClick(View view, int position) {
         TextView text = (TextView) view.findViewById(R.id.tag_title);
-        Intent intent = new Intent(TagActivity.this, TagLookingActivity.class);
+        Intent intent = new Intent(TagActivity.this, LookTagActivity.class);
         intent.putExtra("title", text.getText().toString());
         startActivity(intent);
     }
