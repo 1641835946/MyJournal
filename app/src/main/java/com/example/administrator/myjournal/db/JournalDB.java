@@ -100,6 +100,12 @@ public class JournalDB {
         return timeStr.isEmpty()?null:timeStr;
     }
 
+    public void changeDefinition(Hint hint) {
+        ContentValues values = new ContentValues();
+        values.put("definition", hint.getDefinition());
+        db.update("Definition", values, "tag = ?", new String[]{hint.getTag()});
+    }
+
     public void saveNote(Note note, boolean insert) {//修改
         if (insert) {
             //插入

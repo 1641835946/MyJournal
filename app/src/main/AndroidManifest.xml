@@ -36,7 +36,9 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.AddTagActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog" />
+            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth" />
+        <activity android:name=".activity.ChangeDefinitionActivity"
+            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth"/>
         <activity android:name=".activity.LookTagActivity" />
         <activity android:name=".activity.EditTodayActivity" />
         <activity

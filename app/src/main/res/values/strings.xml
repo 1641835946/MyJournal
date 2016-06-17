@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MyJournal</string>
+    <string name="app_name">Better</string>
 
     <string name="navigation_drawer_open">Open navigation drawer</string>
     <string name="navigation_drawer_close">Close navigation drawer</string>
@@ -11,4 +11,6 @@
     <string name="PhotoImport">插入</string>
     <string name="title_activity_history">HistoryActivity</string>
     <string name="title_activity_day_look">DayLookActivity</string>
+    <string name="Change">修改标签定义</string>
+    <string name="Sure">确定</string>
 </resources>

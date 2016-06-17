@@ -68,11 +68,14 @@ public class TagActivity extends BaseActivity implements OnStartDragListener, Ta
 
     @Override
     public void onItemClick(View view, int position) {
-        TextView text = (TextView) view.findViewById(R.id.tag_title);
+        TextView tag = (TextView) view.findViewById(R.id.tag_title);
+        TextView definition = (TextView) view.findViewById(R.id.tag_content);
         Intent intent = new Intent(TagActivity.this, LookTagActivity.class);
-        intent.putExtra("title", text.getText().toString());
+        intent.putExtra("tag", tag.getText().toString());
+        intent.putExtra("definition", definition.getText().toString());
         startActivity(intent);
     }
+    //有些id的名字一样，是不是小心改名?能不一样还是不一样的好。
 //
 //    @Override
 //    public void onItemLongClick(final View view, final int position) {

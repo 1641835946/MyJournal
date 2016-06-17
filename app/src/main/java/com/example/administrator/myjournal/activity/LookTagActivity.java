@@ -9,30 +9,39 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.example.administrator.myjournal.R;
+import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.Export;
+import com.example.administrator.myjournal.util.LogUtil;
+import com.example.administrator.myjournal.util.TodayHelper;
 
 /**
  * Created by Administrator on 2016/6/3.
  */
 public class LookTagActivity extends BaseActivity {
 
-    private String title;
+    private String tag;
     private TextView contentView;
+    private TextView definitionView;
     private String content;
+    private String definition;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_look_tag);
+        //java.lang.IllegalStateException: ScrollView can host only one direct child
 
         Intent intent = getIntent();
-        title = intent.getStringExtra("title");
+        tag = intent.getStringExtra("tag");
+        definition = intent.getStringExtra("definition");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tag_look_bar);
-        toolbar.setTitle(title);
+        toolbar.setTitle(tag);
         setSupportActionBar(toolbar);
+        definitionView = (TextView)findViewById(R.id.look_tag_definition);
+        definitionView.setText(definition);
 
-        content = new Export().allTag(title);
+        content = new Export().allTag(tag);
         contentView = (TextView) findViewById(R.id.look_tag_content);
         contentView.setText(content);
     }
@@ -40,7 +49,7 @@ public class LookTagActivity extends BaseActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.today, menu);
+        getMenuInflater().inflate(R.menu.look_tag, menu);
         return true;
     }
 
@@ -53,14 +62,33 @@ public class LookTagActivity extends BaseActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.today_menu) {
-            Intent share = new Export().exportMethod(title, content);
+            Intent share = new Export().exportMethod(tag, content);
             try {
                 startActivity(Intent.createChooser(share, "分享一下"));
             } catch (android.content.ActivityNotFoundException ex) {
                 Toast.makeText(this, "Can't find share component to share", Toast.LENGTH_SHORT).show();
             }
             return true;
+        } else {
+            Intent change = new Intent(LookTagActivity.this, ChangeDefinitionActivity.class);
+            change.putExtra("tagName", tag);
+            change.putExtra("tagDefinition", definition);
+            startActivityForResult(change, 1);//最好显示定义，返回新的定义
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        switch (requestCode) {
+            case 1:
+                if (resultCode == RESULT_OK) {
+                    String text = data.getStringExtra("content");
+                    LogUtil.e("LookTagActivity", text);
+                    definitionView.setText(text);
+                }
+                break;
+            default:
+        }
     }
 }
