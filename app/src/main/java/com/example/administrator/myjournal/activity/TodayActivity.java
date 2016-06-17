@@ -4,6 +4,8 @@ package com.example.administrator.myjournal.activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.ResolveInfo;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
@@ -20,17 +22,20 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.administrator.myjournal.R;
 import com.example.administrator.myjournal.db.JournalDB;
 import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.CurrentTime;
+import com.example.administrator.myjournal.util.Export;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 import com.example.administrator.myjournal.util.TagAdapter;
 import com.example.administrator.myjournal.util.TodayAdapter;
 import com.example.administrator.myjournal.util.TodayHelper;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -137,6 +142,18 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         //noinspection SimplifiableIfStatement
         if (id == R.id.today_menu) {
             //导出当天的所有，用印象笔记，以日期命名。
+            long time = TodayHelper.loginTime;
+            Intent share = new Export().exportMethod(time);
+            try {
+                startActivity(Intent.createChooser(share, "分享一下"));
+            } catch (android.content.ActivityNotFoundException ex) {
+                Toast.makeText(this, "Can't find share component to share", Toast.LENGTH_SHORT).show();
+            }
+//            if (share != null) {
+//                startActivity(Intent.createChooser(share, "分享一下"));
+//            } else {
+//                Toast.makeText(TodayActivity.this, "Fail", Toast.LENGTH_SHORT).show();
+//            }
             return true;
         }
         return super.onOptionsItemSelected(item);

@@ -15,7 +15,7 @@ tools:showIn="@layout/app_bar_today">
 <android.support.v7.widget.RecyclerView
     android:id="@+id/today_recyclerview"
     android:divider="#ffff0000"
-    android:dividerHeight="10dp"
+    android:dividerHeight="60dp"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:scrollbars="vertical"/>

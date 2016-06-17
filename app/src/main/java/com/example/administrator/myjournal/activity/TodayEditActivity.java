@@ -29,7 +29,6 @@ import com.example.administrator.myjournal.model.Hint;
 import com.example.administrator.myjournal.model.Note;
 import com.example.administrator.myjournal.util.CurrentTime;
 import com.example.administrator.myjournal.util.DisplayEditText;
-import com.example.administrator.myjournal.util.InsertPicEditText;
 import com.example.administrator.myjournal.util.LogUtil;
 import com.example.administrator.myjournal.util.MyApplication;
 
@@ -41,7 +40,8 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
     public static final int CHOOSE_PHOTO = 1;
     private TextView tagView;
     private TextView hintView;
-    private InsertPicEditText editText;
+    //private InsertPicEditText editText;
+    private EditText editText;
     private Button certainButton;
     private JournalDB journalDB;
     private Note note;
@@ -59,7 +59,8 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
     private void init() {
         tagView = (TextView) findViewById(R.id.today_edit_tag);
         hintView = (TextView) findViewById(R.id.today_edit_hint);
-        editText = (InsertPicEditText) findViewById(R.id.today_edit_content);
+        //editText = (InsertPicEditText) findViewById(R.id.today_edit_content);
+        editText = (EditText) findViewById(R.id.today_edit_content);
         certainButton = (Button) findViewById(R.id.today_edit_certain);
 
         time = CurrentTime.getTime();
@@ -73,10 +74,10 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         LogUtil.e("todayEditActivity", "time:"+time+"/tag:"+tagText);
         LogUtil.e("TodayEditActivity", note.toString());
         //if (note.getDefinition() == "") {
-            //editText.setText(note.getDefinition());
+        editText.setText(note.getDefinition());
         //}
-        displayEdit = new DisplayEditText(TodayEditActivity.this, editText);
-        displayEdit.getImagePath(note.getDefinition());
+//        displayEdit = new DisplayEditText(TodayEditActivity.this, editText);
+//        displayEdit.getImagePath(note.getDefinition());
         certainButton.setOnClickListener(this);
         editText.setFocusable(false);
         certainButton.requestFocus();
@@ -127,6 +128,7 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         }
     }
 
+
     @Override
     public void onBackPressed() {
         if ("编辑".equals(certainButton.getText().toString())) {
@@ -137,90 +139,90 @@ public class TodayEditActivity extends BaseActivity implements View.OnClickListe
         finish();
     }
 
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.day_tag_menu, menu);
-        return true;
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.day_tag_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//
+//        //noinspection SimplifiableIfStatement
+//        switch (id) {
+//            case R.id.day_tag_insert:
+//                Intent addPhotoIntent = new Intent("android.intent.action.GET_CONTENT");
+//                addPhotoIntent.setType("image/*");
+//                startActivityForResult(addPhotoIntent, CHOOSE_PHOTO);
+//                break;
+//            case R.id.day_tag_photo:
+//
+//                break;
+//            default:
+//        }
+//        return true;
+//    }
 
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-
-        //noinspection SimplifiableIfStatement
-        switch (id) {
-            case R.id.day_tag_insert:
-                Intent addPhotoIntent = new Intent("android.intent.action.GET_CONTENT");
-                addPhotoIntent.setType("image/*");
-                startActivityForResult(addPhotoIntent, CHOOSE_PHOTO);
-                break;
-            case R.id.day_tag_photo:
-
-                break;
-            default:
-        }
-        return true;
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        switch (requestCode) {
-            case CHOOSE_PHOTO:
-                if (resultCode == RESULT_OK) {
-                    if (Build.VERSION.SDK_INT >= 19) {
-                        handleImageOnKitKat(data);
-                    } else {
-                        handleImageBeforeKitKat(data);
-                    }
-                }
-                break;
-            default:
-                break;
-        }
-    }
-
-    @TargetApi(19)
-    private void handleImageOnKitKat(Intent data){
-        String imagePath=null;
-        Uri uri=data.getData();
-        if(DocumentsContract.isDocumentUri(this, uri)){
-            String docId=DocumentsContract.getDocumentId(uri);
-            if("com.android.providers.media.documents".equals(uri.getAuthority())){
-                String id=docId.split(":")[1];
-                String selection= MediaStore.Images.Media._ID+"="+id;
-                imagePath=getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
-            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
-                Uri contentUri= ContentUris.withAppendedId(Uri.parse("cintent://downloads/public_downloads"), Long.valueOf(docId));
-                imagePath=getImagePath(contentUri,null);
-            }
-        }else if("content".equalsIgnoreCase(uri.getScheme())){
-            imagePath=getImagePath(uri,null);
-        }
-        displayEdit.displayImage(imagePath);
-    }
-
-    private void handleImageBeforeKitKat(Intent data){
-        Uri uri=data.getData();
-        String imagePath=getImagePath(uri, null);
-        displayEdit.displayImage(imagePath);
-    }
-//hello world，git
-    private String getImagePath(Uri uri,String selection){
-        String path=null;
-        Cursor cursor=getContentResolver().query(uri, null,selection,null,null);
-        if(cursor!=null){
-            if(cursor.moveToFirst()){
-                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
-                LogUtil.e("TodayEditActivity", "getImagePath:"+path);
-            }
-            cursor.close();
-        }
-        LogUtil.e("TodayEditActivity", path);
-        return path;
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        switch (requestCode) {
+//            case CHOOSE_PHOTO:
+//                if (resultCode == RESULT_OK) {
+//                    if (Build.VERSION.SDK_INT >= 19) {
+//                        handleImageOnKitKat(data);
+//                    } else {
+//                        handleImageBeforeKitKat(data);
+//                    }
+//                }
+//                break;
+//            default:
+//                break;
+//        }
+//    }
+//
+//    @TargetApi(19)
+//    private void handleImageOnKitKat(Intent data){
+//        String imagePath=null;
+//        Uri uri=data.getData();
+//        if(DocumentsContract.isDocumentUri(this, uri)){
+//            String docId=DocumentsContract.getDocumentId(uri);
+//            if("com.android.providers.media.documents".equals(uri.getAuthority())){
+//                String id=docId.split(":")[1];
+//                String selection= MediaStore.Images.Media._ID+"="+id;
+//                imagePath=getImagePath(MediaStore.Images.Media.EXTERNAL_CONTENT_URI,selection);
+//            }else if("com.android.providers.downloads.documents".equals(uri.getAuthority())){
+//                Uri contentUri= ContentUris.withAppendedId(Uri.parse("cintent://downloads/public_downloads"), Long.valueOf(docId));
+//                imagePath=getImagePath(contentUri,null);
+//            }
+//        }else if("content".equalsIgnoreCase(uri.getScheme())){
+//            imagePath=getImagePath(uri,null);
+//        }
+//        displayEdit.displayImage(imagePath);
+//    }
+//
+//    private void handleImageBeforeKitKat(Intent data){
+//        Uri uri=data.getData();
+//        String imagePath=getImagePath(uri, null);
+//        displayEdit.displayImage(imagePath);
+//    }
+////hello world，git
+//    private String getImagePath(Uri uri,String selection){
+//        String path=null;
+//        Cursor cursor=getContentResolver().query(uri, null,selection,null,null);
+//        if(cursor!=null){
+//            if(cursor.moveToFirst()){
+//                path=cursor.getString(cursor.getColumnIndex(MediaStore.Images.Media.DATA));
+//                LogUtil.e("TodayEditActivity", "getImagePath:"+path);
+//            }
+//            cursor.close();
+//        }
+//        LogUtil.e("TodayEditActivity", path);
+//        return path;
+//    }
 
 }
