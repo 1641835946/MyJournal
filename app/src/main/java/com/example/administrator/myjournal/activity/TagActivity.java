@@ -9,6 +9,7 @@ import android.support.v7.widget.Toolbar;
 import android.support.v7.widget.helper.ItemTouchHelper;
 import android.util.Log;
 import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.administrator.myjournal.R;
@@ -29,13 +30,15 @@ public class TagActivity extends BaseActivity implements OnStartDragListener, Ta
     private TagAdapter mAdapter;
     private JournalDB journalDB = JournalDB.getInstance(MyApplication.getContext());
     private ItemTouchHelper mItemTouchHelper;
+    private TextView title;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_tag);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
-        toolbar.setTitle("标签");
+//        toolbar.setTitle("标签");
         setSupportActionBar(toolbar);
 
         mRecyclerView = (RecyclerView) findViewById(R.id.id_recyclerview);
@@ -48,15 +51,22 @@ public class TagActivity extends BaseActivity implements OnStartDragListener, Ta
         mItemTouchHelper = new ItemTouchHelper(callback);
         mItemTouchHelper.attachToRecyclerView(mRecyclerView);
 
-        Note note = journalDB.loadNote(2222222, "liang洁");
-        if (note == null) Log.e("tagActivity", "false");
-
         FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.tag_add_float);
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
                 Intent addIntent = new Intent(TagActivity.this, AddTagActivity.class);
                 startActivityForResult(addIntent, 1);
+            }
+        });
+
+        title = (TextView) findViewById(R.id.title);
+        title.setText("标签");
+        back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
             }
         });
     }

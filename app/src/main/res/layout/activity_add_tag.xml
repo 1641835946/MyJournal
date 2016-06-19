@@ -31,8 +31,8 @@
         android:id="@+id/add_tag_button"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        style="@style/ButtonAppear"
         android:text="确定"/>
+    <!--style="@style/ButtonAppear"-->
 
 
 

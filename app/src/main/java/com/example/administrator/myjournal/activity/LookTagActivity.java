@@ -5,6 +5,8 @@ import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -24,6 +26,8 @@ public class LookTagActivity extends BaseActivity {
     private TextView definitionView;
     private String content;
     private String definition;
+    private TextView title;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -36,7 +40,6 @@ public class LookTagActivity extends BaseActivity {
         definition = intent.getStringExtra("definition");
 
         Toolbar toolbar = (Toolbar) findViewById(R.id.tag_look_bar);
-        toolbar.setTitle(tag);
         setSupportActionBar(toolbar);
         definitionView = (TextView)findViewById(R.id.look_tag_definition);
         definitionView.setText(definition);
@@ -44,6 +47,16 @@ public class LookTagActivity extends BaseActivity {
         content = new Export().allTag(tag);
         contentView = (TextView) findViewById(R.id.look_tag_content);
         contentView.setText(content);
+
+        title = (TextView) findViewById(R.id.title);
+        title.setText(tag);
+        back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -61,7 +74,7 @@ public class LookTagActivity extends BaseActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.today_menu) {
+        if (id == R.id.export_menu) {
             Intent share = new Export().exportMethod(tag, content);
             try {
                 startActivity(Intent.createChooser(share, "分享一下"));

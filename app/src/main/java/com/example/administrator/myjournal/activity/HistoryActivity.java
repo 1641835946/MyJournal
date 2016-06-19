@@ -8,6 +8,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Button;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -30,13 +31,14 @@ public class HistoryActivity extends BaseActivity {
     private JournalDB journalDB;
     private TextView contentView;
     private String content;
+    private TextView title;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_history);
         Toolbar toolbar = (Toolbar) findViewById(R.id.histor_bar);
-        toolbar.setTitle("所有");// 标题的文字需在setSupportActionBar之前，不然会无效
         setSupportActionBar(toolbar);
 
         /* 这些通过ActionBar来设置也是一样的，注意要在setSupportActionBar(toolbar);之后，不然就报错了 */
@@ -74,12 +76,22 @@ public class HistoryActivity extends BaseActivity {
                 }, cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH) - 1).show();
             }
         });
+
+        title = (TextView) findViewById(R.id.title);
+        title.setText("所有");
+        back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
-        getMenuInflater().inflate(R.menu.today, menu);
+        getMenuInflater().inflate(R.menu.export_menu, menu);
         return true;
     }
 
@@ -88,7 +100,7 @@ public class HistoryActivity extends BaseActivity {
 
         int id = item.getItemId();
 
-        if (id == R.id.today_menu) {
+        if (id == R.id.export_menu) {
             Intent share = new Export().exportMethod(content);
             try {
                 startActivity(Intent.createChooser(share, "分享一下"));

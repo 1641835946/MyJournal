@@ -20,7 +20,9 @@
             android:layout_height="?attr/actionBarSize"
             android:background="@color/colorBlue"
             app:popupTheme="@style/AppTheme.PopupOverlay"
-            />
+            >
+            <include layout="@layout/back_title"/>
+        </android.support.v7.widget.Toolbar>
     </android.support.design.widget.AppBarLayout>
 
     <include layout="@layout/content_tag"/>
@@ -31,5 +33,6 @@
         android:layout_height="wrap_content"
         android:layout_gravity="bottom|end"
         android:layout_margin="@dimen/fab_margin"
-        android:src="@android:drawable/ic_dialog_email" />
+        android:background="#ffffff"
+        android:src="@drawable/add"/>
 </android.support.design.widget.CoordinatorLayout>

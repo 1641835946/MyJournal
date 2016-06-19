@@ -4,11 +4,11 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/tagList"
-            android:icon="@drawable/ic_menu_camera"
+            android:icon="@drawable/tag"
             android:title="标签" />
         <item
             android:id="@+id/allList"
-            android:icon="@drawable/ic_menu_gallery"
+            android:icon="@drawable/history"
             android:title="历史" />
     </group>
 
@@ -16,7 +16,7 @@
         <menu>
             <item
                 android:id="@+id/exportToday"
-                android:icon="@drawable/ic_menu_share"
+                android:icon="@drawable/day"
                 android:title="导出今天" />
             <!--
             <item
@@ -26,7 +26,7 @@
                 -->
             <item
                 android:id="@+id/exportAll"
-                android:icon="@drawable/ic_menu_slideshow"
+                android:icon="@drawable/all"
                 android:title="导出所有" />
         </menu>
     </item>

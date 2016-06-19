@@ -2,8 +2,11 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
-        android:id="@+id/today_menu"
+        android:id="@+id/export_menu"
         android:orderInCategory="100"
+        android:icon="@drawable/evernote"
+        app:showAsAction="ifRoom"
         android:title="@string/Export"
         />
+
 </menu>

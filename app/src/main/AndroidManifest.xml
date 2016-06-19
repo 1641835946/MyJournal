@@ -7,7 +7,7 @@
     <application
         android:name=".util.MyApplication"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher"
+        android:icon="@drawable/pomegranate_blue"
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
@@ -36,11 +36,15 @@
             android:theme="@style/AppTheme.NoActionBar" />
         <activity
             android:name=".activity.AddTagActivity"
+            android:windowSoftInputMode="stateVisible"
             android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth" />
         <activity android:name=".activity.ChangeDefinitionActivity"
-            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth"/>
+            android:theme="@style/Theme.AppCompat.Light.Dialog.MinWidth"
+            android:windowSoftInputMode="stateVisible"
+            android:label="修改标签定义："/>
         <activity android:name=".activity.LookTagActivity" />
-        <activity android:name=".activity.EditTodayActivity" />
+        <activity android:name=".activity.EditTodayActivity"
+            android:label=""/><!--黑技巧-->
         <activity
             android:name=".activity.HistoryActivity"
             android:label="@string/title_activity_history"

@@ -48,7 +48,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
 
         mRecyclerView = (RecyclerView) findViewById(R.id.today_recyclerview);
         mRecyclerView.setLayoutManager(new LinearLayoutManager(this));
-        //mRecyclerView.setHasFixedSize(true);
+        mRecyclerView.setHasFixedSize(true);
         mRecyclerView.setAdapter(mAdapter = new TodayAdapter());
         mAdapter.setOnItemClickLitener(this);
         List<Long> timeList = journalDB.loadTime();
@@ -117,7 +117,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.today, menu);
+        getMenuInflater().inflate(R.menu.export_menu, menu);
         return true;
     }
 
@@ -129,7 +129,7 @@ public class TodayActivity extends BaseActivity implements NavigationView.OnNavi
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.today_menu) {
+        if (id == R.id.export_menu) {
             //导出当天的所有，用印象笔记，以日期命名。
             exportToday();
             return true;

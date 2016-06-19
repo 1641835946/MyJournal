@@ -6,6 +6,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -19,13 +21,14 @@ public class LookDayActivity extends AppCompatActivity {
     private TextView contentView;
     private String content;
     private long time;
+    private TextView title;
+    private Button back;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_look_day);
         Toolbar toolbar = (Toolbar) findViewById(R.id.day_look_bar);
-        toolbar.setTitle("一天");
         setSupportActionBar(toolbar);
 
         Intent intent = getIntent();
@@ -35,12 +38,22 @@ public class LookDayActivity extends AppCompatActivity {
         contentView = (TextView) findViewById(R.id.day_content);
         content = new Export().aDay(time);
         contentView.setText(content);
+
+        title = (TextView) findViewById(R.id.title);
+        title.setText("一天");
+        back = (Button) findViewById(R.id.back);
+        back.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
     }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.today, menu);
+        getMenuInflater().inflate(R.menu.export_menu, menu);
         return true;
     }
 
@@ -52,7 +65,7 @@ public class LookDayActivity extends AppCompatActivity {
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.today_menu) {
+        if (id == R.id.export_menu) {
             //导出当天的所有，用印象笔记，以日期命名。
             Intent share = new Export().exportMethod(time, content);
             try {

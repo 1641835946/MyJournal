@@ -1,9 +1,15 @@
 package com.example.administrator.myjournal.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -20,18 +26,23 @@ import com.example.administrator.myjournal.util.MyApplication;
 /**
  * Created by Administrator on 2016/6/3.
  */
-public class EditTodayActivity extends BaseActivity implements View.OnClickListener {
+public class EditTodayActivity extends BaseActivity {
 //如何复用代码:类，接口？？？
     public static final int CHOOSE_PHOTO = 1;
     private TextView hintView;
     //private InsertPicEditText editText;
     private EditText editText;
-    private Button certainButton;
+    
     private JournalDB journalDB;
     private Note note;
     private String tagText;
     private long time;
-    private DisplayEditText displayEdit;
+    //private DisplayEditText displayEdit;
+    private InputMethodManager inputManager;
+    private Button completeBack;
+    private boolean writing = false;
+    private FloatingActionButton fab;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,80 +53,145 @@ public class EditTodayActivity extends BaseActivity implements View.OnClickListe
 
     private void init() {
         hintView = (TextView) findViewById(R.id.today_edit_hint);
-        //editText = (InsertPicEditText) findViewById(R.id.content_edit_today);
         editText = (EditText) findViewById(R.id.today_edit_content);
-        certainButton = (Button) findViewById(R.id.today_edit_certain);
 
         time = CurrentTime.getTime();
         Intent receiveIntent = getIntent();
         tagText = receiveIntent.getStringExtra("tag");
+
         Toolbar toolbar = (Toolbar) findViewById(R.id.today_edit_bar);
-        toolbar.setTitle(tagText);
         setSupportActionBar(toolbar);
+        // android:navigationIcon="@drawable/previous"
+        // android:navigationContentDescription="@string/Back"
+        // 无作用，要求21以上
+//        toolbar.setNavigationIcon(R.drawable.previous);
+//        toolbar.setNavigationContentDescription(getResources().getString(R.string.Back));
+//        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
+//            @Override
+//            public void onClick(View v) {
+//                finish();
+//            }
+//        });
+        // 图标太大
+        TextView title = (TextView) findViewById(R.id.title);
+        title.setText(tagText);
+        completeBack = (Button) findViewById(R.id.back);
+        completeBack.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (writing) {
+                    completeBack.setBackgroundResource(R.drawable.previous);
+                    writing = false;
+                    inputManager.hideSoftInputFromWindow(editText.getWindowToken(), 0);
+//                    if (editText.getText().toString().isEmpty()) {
+//                        journalDB.saveNote(note, false);
+//                    } else {
+                        note.setDefinition(editText.getText().toString());
+                        journalDB.saveNote(note, false);//修改
+//                    }
+//                    editText.clearFocus();
+                    editText.setFocusable(false);
+//                    completeBack.requestFocus();
+                    fab.setVisibility(View.VISIBLE);
+                } else {
+                    finish();
+                }
+            }
+        });
+
         journalDB = JournalDB.getInstance(MyApplication.getContext());
         Hint hint = journalDB.loadHint(tagText);
         hintView.setText(hint.getDefinition());
         note = journalDB.loadNote(time, tagText);
-        LogUtil.e("EditTodayActivity", "time:"+time+"/tag:"+tagText);
-        LogUtil.e("EditTodayActivity", note.toString());
-        //if (note.getDefinition() == "") {
         editText.setText(note.getDefinition());
-        //}
-//        displayEdit = new DisplayEditText(EditTodayActivity.this, editText);
-//        displayEdit.getImagePath(note.getDefinition());
-        certainButton.setOnClickListener(this);
-        editText.setFocusable(false);
-        certainButton.requestFocus();
+
+        inputManager = (InputMethodManager) this
+                .getSystemService(Context.INPUT_METHOD_SERVICE);
+        fab = (FloatingActionButton) findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                editText.setFocusable(true);
+                editText.setFocusableInTouchMode(true);
+                editText.requestFocus();
+                inputManager.showSoftInput(editText, 0);
+                view.setVisibility(View.GONE);
+                writing = true;
+                completeBack.setBackgroundResource(R.drawable.ok);
+            }
+        });
     }
 
-    @Override
-    public void onClick(View v) {
-        if ("保存".equals(certainButton.getText().toString())) {
-//            if (preContent.isEmpty()) {
-//                if (editText.getText().toString().isEmpty()) {
-//                    Toast.makeText(EditTodayActivity.this, "未保存，不能保存空的内容", Toast.LENGTH_SHORT).show();
-//                } else {
-//                    note.setTime(time);
-//                    note.setTag(tagText);
-//                    note.setDefinition(editText.getText().toString());
-//                    journalDB.saveNote(note, true);//插入
-//                    preContent = editText.getText().toString();
-//                }
-//            } else {
-//                if (editText.getText().toString().isEmpty()) {
-//                    journalDB.deleteNote(time, tagText);
-//                    preContent = "";
-//                } else {
-//                    note.setDefinition(editText.getText().toString());
-//                    journalDB.saveNote(note, false);//修改
-//                    preContent = editText.getText().toString();
-//                }
-//            }
-//            if (!preContent.isEmpty() && !editText.getText().toString().isEmpty()) {
-//                certainButton.setText("编辑");//toast要break出去！！！
-//                editText.setFocusable(false);
-//                certainButton.requestFocus();
-//            }
-              if (editText.getText().toString().isEmpty()) {
-                  journalDB.deleteNote(time, tagText);
-              } else {
-                  note.setDefinition(editText.getText().toString());
-                  journalDB.saveNote(note, false);//修改
-              }
-              certainButton.setText("编辑");//toast要break出去！！！
-              editText.setFocusable(false);
-              certainButton.requestFocus();
-        } else {
-            certainButton.setText("保存");
-            editText.setFocusable(true);
-            editText.setFocusableInTouchMode(true);
-            editText.requestFocus();
-        }
-    }
+//    @Override
+//    public boolean onCreateOptionsMenu(Menu menu) {
+//        // Inflate the menu; this adds items to the action bar if it is present.
+//        getMenuInflater().inflate(R.menu.export_menu, menu);
+//        return true;
+//    }
+//
+//    @Override
+//    public boolean onOptionsItemSelected(MenuItem item) {
+//        // Handle action bar item clicks here. The action bar will
+//        // automatically handle clicks on the Home/Up button, so long
+//        // as you specify a parent activity in AndroidManifest.xml.
+//        int id = item.getItemId();
+//        View view = (View) findViewById(id);
+//        //if (view.)
+//        return super.onOptionsItemSelected(item);
+//    }
+//
+//    @Override
+//    public void onClick(View v) {
+//        if ("保存".equals(certainButton.getText().toString())) {
+////            if (preContent.isEmpty()) {
+////                if (editText.getText().toString().isEmpty()) {
+////                    Toast.makeText(EditTodayActivity.this, "未保存，不能保存空的内容", Toast.LENGTH_SHORT).show();
+////                } else {
+////                    note.setTime(time);
+////                    note.setTag(tagText);
+////                    note.setDefinition(editText.getText().toString());
+////                    journalDB.saveNote(note, true);//插入
+////                    preContent = editText.getText().toString();
+////                }
+////            } else {
+////                if (editText.getText().toString().isEmpty()) {
+////                    journalDB.deleteNote(time, tagText);
+////                    preContent = "";
+////                } else {
+////                    note.setDefinition(editText.getText().toString());
+////                    journalDB.saveNote(note, false);//修改
+////                    preContent = editText.getText().toString();
+////                }
+////            }
+////            if (!preContent.isEmpty() && !editText.getText().toString().isEmpty()) {
+////                certainButton.setText("编辑");//toast要break出去！！！
+////                editText.setFocusable(false);
+////                certainButton.requestFocus();
+////            }
+//              if (editText.getText().toString().isEmpty()) {
+//                  journalDB.deleteNote(time, tagText);
+//              } else {
+//                  note.setDefinition(editText.getText().toString());
+//                  journalDB.saveNote(note, false);//修改
+//              }
+//              certainButton.setText("编辑");//toast要break出去！！！
+//              editText.setFocusable(false);
+//              certainButton.requestFocus();
+//        } else {
+//            certainButton.setText("保存");
+//            editText.setFocusable(true);
+//            editText.setFocusableInTouchMode(true);
+//            editText.requestFocus();
+//            inputManager = (InputMethodManager) this
+//                    .getSystemService(Context.INPUT_METHOD_SERVICE);
+//            inputManager.showSoftInput(editText, 0);
+//
+//        }
+//    }
 
     @Override
     public void onBackPressed() {
-        if ("编辑".equals(certainButton.getText().toString())) {
+        if (!writing) {
             Intent backIntent = new Intent();
             backIntent.putExtra("content", editText.getText().toString());
             setResult(RESULT_OK, backIntent);
@@ -194,7 +270,7 @@ public class EditTodayActivity extends BaseActivity implements View.OnClickListe
 //        String imagePath=getImagePath(uri, null);
 //        displayEdit.displayImage(imagePath);
 //    }
-////hello world，git
+//
 //    private String getImagePath(Uri uri,String selection){
 //        String path=null;
 //        Cursor cursor=getContentResolver().query(uri, null,selection,null,null);

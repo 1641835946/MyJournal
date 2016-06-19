@@ -13,4 +13,8 @@
     <string name="title_activity_day_look">DayLookActivity</string>
     <string name="Change">修改标签定义</string>
     <string name="Sure">确定</string>
+    <string name="Back">退出</string>
+    <string name="name">梁洁</string>
+    <string name="email">wintercomes@foxmail.com</string>
+
 </resources>
