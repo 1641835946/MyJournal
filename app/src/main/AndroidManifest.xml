@@ -54,6 +54,11 @@
             android:name=".activity.LookDayActivity"
             android:label="@string/title_activity_day_look"
             android:theme="@style/AppTheme"></activity>
+
+        <activity
+            android:name="im.dino.dbinspector.activities.DbInspectorActivity">
+        </activity>
+
     </application>
 
 </manifest>
